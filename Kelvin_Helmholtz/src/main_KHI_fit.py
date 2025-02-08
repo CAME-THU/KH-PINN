@@ -2,6 +2,7 @@ import deepxde as dde
 import numpy as np
 # import torch
 import os
+import time
 import argparse
 from utils.dataset_modi import ScaledDataSet, ScaledComponentDataSet
 
@@ -141,12 +142,16 @@ def main(args):
                   loss_weights=loss_weights,
                   # external_trainable_variables=external_trainable_variables,
                   )
+
+    t0 = time.perf_counter()
     model.train(iterations=args.n_iter,
                 display_every=100,
                 disregard_previous_best=False,
                 callbacks=callbacks,
                 model_restore_path=None,
                 model_save_path=output_dir + "models/model_last", )
+    t_took = time.perf_counter() - t0
+    np.savetxt(output_dir + f"training_time_is_{t_took:.2f}s.txt", np.array([t_took]), fmt="%.2f")
 
     # ----------------------------------------------------------------------
     # restore the best model (do not if using LBFGS)

@@ -12,9 +12,10 @@ from mpl_toolkits.mplot3d import Axes3D
 
 set_fs = 22
 set_dpi = 200
-plt.rcParams["font.sans-serif"] = "Arial"  # default font
-# plt.rcParams["font.sans-serif"] = "Nimbus Sans"  # default font
 plt.rcParams["font.size"] = set_fs  # default font size
+plt.rcParams["font.sans-serif"] = "Arial"  # default font (for Windows)
+# plt.rcParams["font.sans-serif"] = "Nimbus Sans"  # default font (for Linux)
+# plt.rcParams["font.sans-serif"] = "Times New Roman"  # default font
 # plt.rcParams["mathtext.fontset"] = "stix"  # default font of math text
 
 
@@ -116,6 +117,17 @@ class PostProcess:
         print("Saving the metrics of inferred parameters...")
         n_para = len(self.para_refes)
         output_dir = self.output_dir
+
+        para_infes_strs = ["{:.4e}".format(self.para_infes[i]) for i in range(n_para)]
+        para_refes_strs, errors_strs = [], []
+        for i in range(n_para):
+            if self.para_refes[i] is None:
+                para_refes_strs.append("None")
+                errors_strs.append("None")
+            else:
+                para_refes_strs.append("{:.4e}".format(self.para_refes[i]))
+                errors_strs.append("{:.4%}".format(self.para_infes[i] / self.para_refes[i] - 1))
+
         file = open(output_dir + "metrics.txt", "a")
         file.write("\n")
         file.write("parameter:   ")
@@ -123,15 +135,15 @@ class PostProcess:
         file.write("\n")
 
         file.write("reference:   ")
-        file.write(", ".join(["{:.4e}".format(self.para_refes[i]) for i in range(n_para)]))
+        file.write(", ".join(para_refes_strs))
         file.write("\n")
 
         file.write("inferred:   ")
-        file.write(", ".join(["{:.4e}".format(self.para_infes[i]) for i in range(n_para)]))
+        file.write(", ".join(para_infes_strs))
         file.write("\n")
 
         file.write("relative error:   ")
-        file.write(", ".join(["{:.4%}".format(self.para_infes[i] / self.para_refes[i] - 1) for i in range(n_para)]))
+        file.write(", ".join(errors_strs))
         file.write("\n")
         file.close()
 
@@ -196,7 +208,8 @@ class PostProcess:
             plt.title(self.para_mathnames[i], fontsize="medium")
             plt.xlabel("Epoch")
             plt.ylabel(self.para_units[i])
-            plt.plot(epochs, np.ones(len(epochs)) * self.para_refes[i], c="k", ls="--", lw=3, label="Reference")
+            if self.para_refes[i] is not None:
+                plt.plot(epochs, np.ones(len(epochs)) * self.para_refes[i], c="k", ls="--", lw=3, label="Reference")
             plt.plot(epochs, para_history[:, i], lw=2, label="Inferred")
             plt.legend(fontsize="small")
             plt.savefig(output_dir + f"pics/parameter{i + 1}_{self.para_textnames[i]}.png", bbox_inches="tight", dpi=set_dpi)

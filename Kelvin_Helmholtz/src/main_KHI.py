@@ -2,6 +2,7 @@ import deepxde as dde
 import numpy as np
 # import torch
 import os
+import time
 import argparse
 
 # # relative import is not suggested
@@ -123,6 +124,8 @@ def main(args):
                   external_trainable_variables=external_trainable_variables,
                   )
     print("[" + ", ".join(case.names["equations"] + case.names["ICBCOCs"]) + "]" + "\n")
+
+    t0 = time.perf_counter()
     model.train(iterations=args.n_iter,
                 display_every=100,
                 disregard_previous_best=False,
@@ -130,6 +133,8 @@ def main(args):
                 model_restore_path=None,
                 # model_restore_path=output_dir[:-2] + "2/models/model_last-30000.pt",
                 model_save_path=output_dir + "models/model_last", )
+    t_took = time.perf_counter() - t0
+    np.savetxt(output_dir + f"training_time_is_{t_took:.2f}s.txt", np.array([t_took]), fmt="%.2f")
 
     # ----------------------------------------------------------------------
     # restore the best model (do not if using LBFGS)

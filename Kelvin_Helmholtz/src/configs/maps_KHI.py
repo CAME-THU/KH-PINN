@@ -1,8 +1,8 @@
 import torch
 import math as mt
 from utils.networks import FNN, ModifiedMLP
-import deepxde as dde
-import torch.nn.functional as F
+# import deepxde as dde
+# import torch.nn.functional as F
 
 
 class Maps:
