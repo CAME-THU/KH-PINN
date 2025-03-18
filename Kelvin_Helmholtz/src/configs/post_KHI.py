@@ -17,7 +17,7 @@ plt.rcParams["font.sans-serif"] = "Arial"  # default font (for Windows)
 # plt.rcParams["mathtext.fontset"] = "stix"  # default font of math text
 
 
-class PostProcessKHI(PostProcess2Dt):
+class Postprocess(PostProcess2Dt):
     def __init__(self, args, case, model, output_dir):
         super().__init__(args, case, model, output_dir)
         jump_x, jump_y, jump_t = 1, 1, 1

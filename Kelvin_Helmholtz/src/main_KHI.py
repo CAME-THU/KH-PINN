@@ -10,7 +10,7 @@ import argparse
 # import sys
 # sys.path.insert(0, os.path.dirname("E:/Research_ASUS/1 PhD project/AI_PDE/projects_PINN/"))
 from configs.maps_KHI import Maps
-from configs.post_KHI import PostProcessKHI
+from configs.post_KHI import Postprocess
 from utils.utils import efmt, cal_stat
 from utils.callbacks_modi import VariableSaver
 
@@ -155,7 +155,7 @@ def main(args):
         ax.plot((case.x_r, case.x_r), (case.y_l, case.y_r), "k--", lw=1)  # add
 
     n_moments = 26
-    pp2dt = PostProcessKHI(args=args, case=case, model=model, output_dir=output_dir)
+    pp2dt = Postprocess(args=args, case=case, model=model, output_dir=output_dir)
     # pp2dt.save_data(save_refe=False)
     pp2dt.save_metrics()
     pp2dt.save_2dmetrics(n_moments=n_moments)

@@ -243,8 +243,8 @@ class Case:
             ob_xyt = np.vstack([np.ravel(ob_xxx), np.ravel(ob_yyy), np.ravel(ob_ttt)]).T
             n_ob = nx_ob * ny_ob * nt_ob
 
-            nx_refe, ny_refe = self.uuu_refe.shape[0], self.uuu_refe.shape[1]
-            jump_x, jump_y, jump_t = nx_refe // nx_ob, ny_refe // ny_ob, (101 - 1) // (nt_ob - 1)
+            nx_refe, ny_refe, nt_refe = self.uuu_refe.shape[0], self.uuu_refe.shape[1], self.uuu_refe.shape[2]
+            jump_x, jump_y, jump_t = nx_refe // nx_ob, ny_refe // ny_ob, (nt_refe - 1) // (nt_ob - 1)
             ob_rho = self.rhorhorho_refe[::jump_x, ::jump_y, ::jump_t].ravel()[:, None]
             ob_u = self.uuu_refe[::jump_x, ::jump_y, ::jump_t].ravel()[:, None]
             ob_v = self.vvv_refe[::jump_x, ::jump_y, ::jump_t].ravel()[:, None]

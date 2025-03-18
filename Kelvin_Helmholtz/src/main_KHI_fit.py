@@ -12,7 +12,7 @@ from utils.dataset_modi import ScaledDataSet, ScaledComponentDataSet
 # sys.path.insert(0, os.path.dirname("E:/Research_ASUS/1 PhD project/AI_PDE/projects_PINN/"))
 from configs.case_KHI import Case
 from configs.maps_KHI import Maps
-from configs.post_KHI import PostProcessKHI
+from configs.post_KHI import Postprocess
 from utils.utils import efmt, cal_stat
 
 
@@ -39,8 +39,8 @@ def main(args):
     ob_xyt = np.vstack([np.ravel(ob_xxx), np.ravel(ob_yyy), np.ravel(ob_ttt)]).T
     n_ob = nx_ob * ny_ob * nt_ob
 
-    nx_refe, ny_refe = case.uuu_refe.shape[0], case.uuu_refe.shape[1]
-    jump_x, jump_y, jump_t = nx_refe // nx_ob, ny_refe // ny_ob, (101 - 1) // (nt_ob - 1)
+    nx_refe, ny_refe, nt_refe = case.uuu_refe.shape[0], case.uuu_refe.shape[1], case.uuu_refe.shape[2]
+    jump_x, jump_y, jump_t = nx_refe // nx_ob, ny_refe // ny_ob, (nt_refe - 1) // (nt_ob - 1)
     ob_u = case.uuu_refe[::jump_x, ::jump_y, ::jump_t].ravel()[:, None]
     ob_v = case.vvv_refe[::jump_x, ::jump_y, ::jump_t].ravel()[:, None]
     ob_p = case.ppp_refe[::jump_x, ::jump_y, ::jump_t].ravel()[:, None]
@@ -172,7 +172,7 @@ def main(args):
         ax.plot((case.x_r, case.x_r), (case.y_l, case.y_r), "k--", lw=1)  # add
 
     n_moments = 26
-    pp2dt = PostProcessKHI(args=args, case=case, model=model, output_dir=output_dir)
+    pp2dt = Postprocess(args=args, case=case, model=model, output_dir=output_dir)
     # pp2dt.save_data(save_refe=False)
     pp2dt.save_metrics()
     pp2dt.save_2dmetrics(n_moments=n_moments)
